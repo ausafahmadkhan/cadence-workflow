@@ -7,6 +7,8 @@ import com.example.cadence.WorkFlows.UserWorkFlowImpl;
 import com.uber.cadence.client.WorkflowClient;
 import com.uber.cadence.client.WorkflowOptions;
 import com.uber.cadence.worker.Worker;
+import com.uber.cadence.workflow.Functions;
+import com.uber.cadence.workflow.Workflow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,13 +32,14 @@ public class UserServiceImpl implements UserService
         factory.start();
 
         WorkflowClient workflowClient = WorkflowClient.newInstance("local");
+        Long cur = System.currentTimeMillis();
         WorkflowOptions options = new WorkflowOptions.Builder()
+                .setWorkflowId("WorkFlow_"+ cur + "_user_" + userId)
                 .setExecutionStartToCloseTimeout(Duration.ofSeconds(10))
                 .setTaskList(taskList)
                 .build();
 
         UserWorkFlow workFlow = workflowClient.newWorkflowStub(UserWorkFlow.class, options);
-        System.out.println(workFlow.toString() + "\t" + userId);
         workFlow.createEnrollment(userId);
 
         return "created enrollment";

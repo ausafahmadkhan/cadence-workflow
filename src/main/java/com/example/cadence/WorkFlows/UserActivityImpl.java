@@ -20,15 +20,12 @@ public class UserActivityImpl implements UserActivity
 
     @Override
     public String createUserEnrollment(String userId) {
-        System.out.println("User is : " + userId);
-        System.out.println("userenroll " + userEnrollmentService);
         userEnrollmentService.createEnrollment(userId);
         return userId;
     }
 
     @Override
     public Void updateBalance(String userId) {
-        System.out.println("Initiating wallet update process");
         userPaymentService.updateUserBalance(userId);
         return null;
     }
