@@ -1,18 +1,15 @@
 package com.example.cadence.Service;
 
 import com.example.cadence.WorkFlows.UserActivity;
-import com.example.cadence.WorkFlows.UserActivityImpl;
 import com.example.cadence.WorkFlows.UserWorkFlow;
 import com.example.cadence.WorkFlows.UserWorkFlowImpl;
 import com.uber.cadence.client.WorkflowClient;
 import com.uber.cadence.client.WorkflowOptions;
 import com.uber.cadence.worker.Worker;
-import com.uber.cadence.workflow.Functions;
-import com.uber.cadence.workflow.Workflow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
+import java.util.Date;
 
 @Service
 public class UserServiceImpl implements UserService
@@ -32,15 +29,21 @@ public class UserServiceImpl implements UserService
         factory.start();
 
         WorkflowClient workflowClient = WorkflowClient.newInstance("local");
-        Long cur = System.currentTimeMillis();
+        Date date = new Date();
+
         WorkflowOptions options = new WorkflowOptions.Builder()
-                .setWorkflowId("WorkFlow_"+ cur + "_user_" + userId)
-                .setExecutionStartToCloseTimeout(Duration.ofSeconds(10))
-                .setTaskList(taskList)
+                .setWorkflowId("WorkFlow" + "_User_" + userId+"_" + date)
                 .build();
 
         UserWorkFlow workFlow = workflowClient.newWorkflowStub(UserWorkFlow.class, options);
-        workFlow.createEnrollment(userId);
+        try {
+            workFlow.createEnrollment(userId);
+        }
+        catch (Exception e)
+        {
+            System.out.println("Error : " + e.toString());
+            System.out.println("Workflow cause : " + e.getMessage() + "Cause : " + e.getCause());
+        }
 
         return "created enrollment";
     }

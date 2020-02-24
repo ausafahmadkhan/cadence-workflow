@@ -6,6 +6,6 @@ public interface UserWorkFlow
 {
     String taskList = "ENROLLMENT_TASK_LIST";
 
-    @WorkflowMethod(executionStartToCloseTimeoutSeconds = 10, taskList = taskList)
+    @WorkflowMethod(name = "createEnrollmentStudent",executionStartToCloseTimeoutSeconds = 30, taskList = taskList)
     void createEnrollment(String userId);
 }

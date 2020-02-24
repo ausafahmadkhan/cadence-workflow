@@ -10,5 +10,12 @@ public interface UserActivity
     String createUserEnrollment(String userId);
 
     @ActivityMethod(scheduleToCloseTimeoutSeconds = 2, taskList = taskList)
+    Void compensateUserEnrollment(String userId);
+
+    @ActivityMethod(scheduleToCloseTimeoutSeconds = 2, taskList = taskList)
     Void updateBalance(String userId);
+
+    @ActivityMethod(scheduleToCloseTimeoutSeconds = 2, taskList = taskList)
+    Void compensateBalanceUpdate(String userId);
+
 }

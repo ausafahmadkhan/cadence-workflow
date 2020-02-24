@@ -1,22 +1,51 @@
 package com.example.cadence.WorkFlows;
 
-import com.uber.cadence.workflow.*;
-import lombok.SneakyThrows;
+import com.uber.cadence.ActivityTaskStartedEventAttributes;
+import com.uber.cadence.activity.ActivityOptions;
+import com.uber.cadence.activity.ActivityTask;
+import com.uber.cadence.common.RetryOptions;
+import com.uber.cadence.workflow.Async;
+import com.uber.cadence.workflow.Promise;
+import com.uber.cadence.workflow.Saga;
+import com.uber.cadence.workflow.Workflow;
 import org.slf4j.Logger;
 
-import java.util.concurrent.CompletionException;
+import java.time.Duration;
 
 public class UserWorkFlowImpl implements UserWorkFlow
 {
-    private final UserActivity userActivity = Workflow.newActivityStub(UserActivity.class);
+    private final UserActivity userActivity = Workflow.newActivityStub(UserActivity.class,
+            new ActivityOptions.Builder()
+                                .setRetryOptions(new RetryOptions.Builder()
+                                                .setInitialInterval(Duration.ofSeconds(1))
+                                                .setExpiration(Duration.ofMinutes(1))
+                                                .setBackoffCoefficient(1.5d)
+                                                .setMaximumAttempts(4)
+                                                .build())
+                                .build());
+
     private static Logger logger = Workflow.getLogger(UserWorkFlowImpl.class);
 
     @Override
     public void createEnrollment(String userId)
     {
         logger.info("Triggered workflow at " + Workflow.currentTimeMillis());
-        Promise<Void> userPromise = Async.function(userActivity::createUserEnrollment, userId)
-               .thenApply(((Functions.Func1<String, Void>) userActivity::updateBalance));
-        userPromise.get();
+        Saga.Options options = new Saga.Options.Builder().setParallelCompensation(false).build();
+        Saga saga = new Saga(options);
+
+        try {
+            Promise<String> enrollmentPromise = Async.function(userActivity::createUserEnrollment, userId);
+            saga.addCompensation(userActivity::compensateUserEnrollment, userId);
+            enrollmentPromise.get();
+
+            Promise<Void> balancePromise = Async.function(userActivity::updateBalance, userId);
+            saga.addCompensation(userActivity::compensateBalanceUpdate, userId);
+            balancePromise.get();
+        }
+        catch (Exception e )
+        {
+            saga.compensate();
+            logger.error("Compensated : Wrapped exc :  " + e.getMessage());
+        }
      }
 }
