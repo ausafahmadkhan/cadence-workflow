@@ -1,5 +1,9 @@
 package com.example.cadence;
 
+import com.example.cadence.WorkFlows.UserActivity;
+import com.example.cadence.WorkFlows.UserWorkFlowImpl;
+import com.uber.cadence.worker.Worker;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

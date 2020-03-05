@@ -14,30 +14,14 @@ import java.util.Date;
 @Service
 public class UserServiceImpl implements UserService
 {
-    String taskList = "ENROLLMENT_TASK_LIST";
-
     @Autowired
-    private UserActivity userActivity;
+    private UserWorkFlow userWorkFlow;
 
     @Override
     public String enrollStudent(String userId)
     {
-        Worker.Factory factory = new Worker.Factory("local");
-        Worker worker = factory.newWorker(taskList);
-        worker.registerWorkflowImplementationTypes(UserWorkFlowImpl.class);
-        worker.registerActivitiesImplementations(userActivity);
-        factory.start();
-
-        WorkflowClient workflowClient = WorkflowClient.newInstance("local");
-        Date date = new Date();
-
-        WorkflowOptions options = new WorkflowOptions.Builder()
-                .setWorkflowId("WorkFlow" + "_User_" + userId+"_" + date)
-                .build();
-
-        UserWorkFlow workFlow = workflowClient.newWorkflowStub(UserWorkFlow.class, options);
         try {
-            workFlow.createEnrollment(userId);
+            userWorkFlow.createEnrollment(userId);
         }
         catch (Exception e)
         {
