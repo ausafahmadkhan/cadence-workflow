@@ -14,12 +14,18 @@ import java.util.Date;
 @Service
 public class UserServiceImpl implements UserService
 {
-    @Autowired
-    private UserWorkFlow userWorkFlow;
-
     @Override
     public String enrollStudent(String userId)
     {
+        WorkflowClient workflowClient = WorkflowClient.newInstance("local");
+        Date date = new Date();
+
+        WorkflowOptions options = new WorkflowOptions.Builder()
+                .setWorkflowId("WorkFlow : " + date)
+                .build();
+
+        UserWorkFlow userWorkFlow = workflowClient.newWorkflowStub(UserWorkFlow.class, options);
+
         try {
             userWorkFlow.createEnrollment(userId);
         }

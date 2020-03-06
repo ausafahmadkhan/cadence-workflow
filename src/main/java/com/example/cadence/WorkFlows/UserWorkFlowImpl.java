@@ -1,6 +1,7 @@
 package com.example.cadence.WorkFlows;
 
 import com.uber.cadence.ActivityTaskStartedEventAttributes;
+import com.uber.cadence.activity.Activity;
 import com.uber.cadence.activity.ActivityOptions;
 import com.uber.cadence.activity.ActivityTask;
 import com.uber.cadence.common.RetryOptions;
@@ -8,7 +9,9 @@ import com.uber.cadence.workflow.Async;
 import com.uber.cadence.workflow.Promise;
 import com.uber.cadence.workflow.Saga;
 import com.uber.cadence.workflow.Workflow;
+import org.apache.catalina.User;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.Duration;
 
@@ -30,6 +33,8 @@ public class UserWorkFlowImpl implements UserWorkFlow
     public void createEnrollment(String userId)
     {
         logger.info("Triggered workflow at " + Workflow.currentTimeMillis());
+        logger.info("Workflow info : {}", Workflow.getWorkflowInfo());
+        logger.info("UserActivity : {}", userActivity.getDate() );
         Saga.Options options = new Saga.Options.Builder().setParallelCompensation(false).build();
         Saga saga = new Saga(options);
 
