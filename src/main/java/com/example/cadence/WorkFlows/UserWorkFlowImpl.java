@@ -1,8 +1,7 @@
 package com.example.cadence.WorkFlows;
 
-import com.uber.cadence.ActivityTaskStartedEventAttributes;
+import com.example.cadence.Activities.UserActivity;
 import com.uber.cadence.activity.ActivityOptions;
-import com.uber.cadence.activity.ActivityTask;
 import com.uber.cadence.common.RetryOptions;
 import com.uber.cadence.workflow.Async;
 import com.uber.cadence.workflow.Promise;
@@ -30,7 +29,11 @@ public class UserWorkFlowImpl implements UserWorkFlow
     public void createEnrollment(String userId)
     {
         logger.info("Triggered workflow at " + Workflow.currentTimeMillis());
-        Saga.Options options = new Saga.Options.Builder().setParallelCompensation(false).build();
+        logger.info("Workflow info : {}", Workflow.getWorkflowInfo());
+
+        //checking if it is using same activity object
+        logger.info("UserActivity : {}", userActivity.getDate());
+        Saga.Options options = new Saga.Options.Builder().setParallelCompensation(true).build();
         Saga saga = new Saga(options);
 
         try {

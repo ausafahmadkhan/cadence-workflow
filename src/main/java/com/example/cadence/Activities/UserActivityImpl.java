@@ -1,16 +1,17 @@
-package com.example.cadence.WorkFlows;
+package com.example.cadence.Activities;
 
+import com.example.cadence.Activities.UserActivity;
 import com.example.cadence.Service.UserEnrollmentService;
 import com.example.cadence.Service.UserPaymentService;
-import com.example.cadence.Utils.JedisWrapper;
-import com.uber.cadence.activity.Activity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import redis.clients.jedis.Jedis;
+
+import java.util.Date;
 
 @Service
 public class UserActivityImpl implements UserActivity
 {
+    private Date date = new Date();
 
     @Autowired
     private UserEnrollmentService userEnrollmentService;
@@ -18,6 +19,10 @@ public class UserActivityImpl implements UserActivity
     @Autowired
     private UserPaymentService userPaymentService;
 
+    @Override
+    public String getDate() {
+        return "UserActivityImpl{} : " + date;
+    }
 
     @Override
     public String createUserEnrollment(String userId) {

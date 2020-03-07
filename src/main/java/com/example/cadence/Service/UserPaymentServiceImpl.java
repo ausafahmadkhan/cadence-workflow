@@ -29,7 +29,7 @@ public class UserPaymentServiceImpl implements UserPaymentService
         }
         catch (Exception e)
         {
-            System.out.println("Catch //compensated");
+            System.out.println("caught //compensated");
         }
     }
 

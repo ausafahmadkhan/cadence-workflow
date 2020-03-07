@@ -1,4 +1,4 @@
-package com.example.cadence.WorkFlows;
+package com.example.cadence.Activities;
 
 import com.uber.cadence.activity.ActivityMethod;
 
@@ -17,5 +17,8 @@ public interface UserActivity
 
     @ActivityMethod(scheduleToCloseTimeoutSeconds = 2, taskList = taskList)
     Void compensateBalanceUpdate(String userId);
+
+    @ActivityMethod(scheduleToCloseTimeoutSeconds = 2, taskList = taskList)
+    public String getDate();
 
 }
