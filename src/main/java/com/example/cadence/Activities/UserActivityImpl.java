@@ -1,14 +1,10 @@
-package com.example.cadence.WorkFlows;
+package com.example.cadence.Activities;
 
+import com.example.cadence.Activities.UserActivity;
 import com.example.cadence.Service.UserEnrollmentService;
 import com.example.cadence.Service.UserPaymentService;
-import com.example.cadence.Utils.JedisWrapper;
-import com.uber.cadence.activity.Activity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
-import redis.clients.jedis.Jedis;
 
 import java.util.Date;
 

@@ -22,7 +22,7 @@ public class UserEnrollmentServiceImpl implements UserEnrollmentService
         }
         catch (Exception e)
         {
-            System.out.println("caught compensated");
+            System.out.println("caught/compensated");
         }
     }
 
