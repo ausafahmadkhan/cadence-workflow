@@ -1,8 +1,11 @@
 package com.example.cadence.Service;
 
+import com.example.cadence.Configuration.TaskLimiter;
+import com.example.cadence.Enum.WorkFlowQueue;
 import com.example.cadence.WorkFlows.UserWorkFlow;
 import com.uber.cadence.client.WorkflowClient;
 import com.uber.cadence.client.WorkflowOptions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -10,12 +13,43 @@ import java.util.Date;
 @Service
 public class UserServiceImpl implements UserService
 {
-    private static String DOMAIN = "local";
+    @Autowired
+    private WorkflowClient workflowClient;
+
+    @Autowired
+    private TaskLimiter taskLimiter;
+
+    @Autowired
+    private AwsSqsService sqsClient;
+
 
     @Override
     public String enrollStudent(String userId)
     {
-        WorkflowClient workflowClient = WorkflowClient.newInstance(DOMAIN);
+        String response = "";
+        try {
+            if (taskLimiter.isAllowed())
+            {
+                taskLimiter.acquire();
+                response = enrollStudentTask(userId);
+                taskLimiter.release();
+            }
+            else
+            {
+                //add the task to queue
+                System.out.println("Sending to sqs");
+                sqsClient.sendMessage(userId, WorkFlowQueue.UserWorkFLowQueue);
+            }
+        }
+        catch (InterruptedException e)
+        {
+            System.out.println(e.getMessage());
+        }
+        return response;
+    }
+
+    private String enrollStudentTask(String userId)
+    {
         Date date = new Date();
 
         WorkflowOptions options = new WorkflowOptions.Builder()

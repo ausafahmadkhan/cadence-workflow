@@ -1,6 +1,5 @@
 package com.example.cadence.Activities;
 
-import com.example.cadence.Activities.UserActivity;
 import com.example.cadence.Service.UserEnrollmentService;
 import com.example.cadence.Service.UserPaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
