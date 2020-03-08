@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
+
 @RestController
 @RequestMapping("/user")
 public class UserController
@@ -17,8 +20,7 @@ public class UserController
     private UserService userService;
 
     @RequestMapping(value = "/enrollStudent/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> enrollStudent(@PathVariable("id") String id)
-    {
+    public ResponseEntity<String> enrollStudent(@PathVariable("id") String id) throws Exception {
         return ResponseEntity.ok(userService.enrollStudent(id));
     }
 }
