@@ -3,8 +3,9 @@ package com.example.cadence.Service;
 import com.amazonaws.services.sqs.AmazonSQSAsync;
 import com.amazonaws.services.sqs.model.CreateQueueRequest;
 import com.amazonaws.services.sqs.model.GetQueueUrlRequest;
+import com.amazonaws.services.sqs.model.QueueAttributeName;
 import com.amazonaws.services.sqs.model.SendMessageRequest;
-import com.example.cadence.Enum.WorkFlowQueue;
+import com.example.cadence.Enum.SqsQueue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,9 +18,9 @@ public class AwsSqsService
     public void createQueue()
     {
         try {
-            CreateQueueRequest createQueueRequest = new CreateQueueRequest().withQueueName(WorkFlowQueue.UserWorkFLowQueue.getVal());
+            CreateQueueRequest createQueueRequest = new CreateQueueRequest().withQueueName(SqsQueue.UserWorkFLowQueue.getVal());
             //createQueueRequest.addAttributesEntry(QueueAttributeName.FifoQueue.name(), "true");
-            //createQueueRequest.addAttributesEntry(QueueAttributeName.DelaySeconds.name(), "1");
+            createQueueRequest.addAttributesEntry(QueueAttributeName.DelaySeconds.name(), "1");
             sqsClient.createQueue(createQueueRequest);
         }
         catch (Exception e)
@@ -31,9 +32,9 @@ public class AwsSqsService
     @Autowired
     private AmazonSQSAsync sqsClient;
 
-    public void sendMessage(String payload, WorkFlowQueue workFlowQueue)
+    public void sendMessage(String payload, SqsQueue sqsQueue)
     {
-        GetQueueUrlRequest getQueueUrlRequest = new GetQueueUrlRequest(workFlowQueue.getVal());
+        GetQueueUrlRequest getQueueUrlRequest = new GetQueueUrlRequest(sqsQueue.getVal());
         String queueUrl = sqsClient.getQueueUrl(getQueueUrlRequest).getQueueUrl();
         SendMessageRequest sendMessageRequest = new SendMessageRequest();
         sendMessageRequest.setQueueUrl(queueUrl);

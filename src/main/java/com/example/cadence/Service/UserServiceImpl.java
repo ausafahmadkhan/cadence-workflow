@@ -1,14 +1,16 @@
 package com.example.cadence.Service;
 
 import com.example.cadence.Configuration.TaskLimiter;
-import com.example.cadence.Enum.WorkFlowQueue;
+import com.example.cadence.Enum.SqsQueue;
 import com.example.cadence.WorkFlows.UserWorkFlow;
 import com.uber.cadence.client.WorkflowClient;
 import com.uber.cadence.client.WorkflowOptions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class UserServiceImpl implements UserService
@@ -24,33 +26,29 @@ public class UserServiceImpl implements UserService
 
 
     @Override
-    public String enrollStudent(String userId)
+    @Async
+    public CompletableFuture<String> enrollStudent(String userId)
     {
         String response = "";
-        try {
-            if (taskLimiter.isAllowed())
-            {
-                taskLimiter.acquire();
-                response = enrollStudentTask(userId);
-                taskLimiter.release();
-            }
-            else
-            {
-                //add the task to queue
-                System.out.println("Sending to sqs");
-                sqsClient.sendMessage(userId, WorkFlowQueue.UserWorkFLowQueue);
-            }
-        }
-        catch (InterruptedException e)
+        if (taskLimiter.isAllowed())
         {
-            System.out.println(e.getMessage());
+            taskLimiter.tryacquire();
+            response = enrollStudentTask(userId);
+            taskLimiter.release();
         }
-        return response;
+        else
+        {
+            //add the task to queue
+            System.out.println("Sending to sqs");
+            sqsClient.sendMessage(userId, SqsQueue.UserWorkFLowQueue);
+        }
+        return CompletableFuture.completedFuture(response);
     }
 
     private String enrollStudentTask(String userId)
     {
         Date date = new Date();
+        System.out.println("Triggering workflow at : " + date);
 
         WorkflowOptions options = new WorkflowOptions.Builder()
                 .setWorkflowId("WorkFlow : " + date)

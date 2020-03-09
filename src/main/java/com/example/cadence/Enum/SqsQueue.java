@@ -1,12 +1,12 @@
 package com.example.cadence.Enum;
 
-public enum WorkFlowQueue
+public enum SqsQueue
 {
     UserWorkFLowQueue("UserWorkFLowQueue");
 
     String val;
 
-    WorkFlowQueue(String val)
+    SqsQueue(String val)
     {
         this.val = val;
     }

@@ -39,8 +39,8 @@ public class UserActivityImpl implements UserActivity
     @Override
     public Void updateBalance(String userId) {
         userPaymentService.updateUserBalance(userId);
-        throw new RuntimeException("runtime error");
-//        return null;
+//        throw new RuntimeException("runtime error");
+        return null;
     }
 
     @Override

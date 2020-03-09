@@ -10,7 +10,7 @@ public class TaskLimiter
     private Semaphore semaphore;
 
     public TaskLimiter() {
-        this.semaphore = new Semaphore(5);
+        this.semaphore = new Semaphore(5, true);
     }
 
     public boolean isAllowed()
@@ -18,8 +18,8 @@ public class TaskLimiter
         return semaphore.availablePermits() > 0;
     }
 
-    public void acquire() throws InterruptedException {
-        semaphore.acquire();
+    public void tryacquire() {
+        semaphore.tryAcquire();
         System.out.println("Semaphore acquired...");
     }
 

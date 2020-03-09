@@ -2,12 +2,12 @@ package com.example.cadence.Enum;
 
 public enum WorkFlowType
 {
-    UserWorkFlow("UserWorkFlow", WorkFlowQueue.UserWorkFLowQueue);
+    UserWorkFlow("UserWorkFlow", SqsQueue.UserWorkFLowQueue);
 
     String val;
-    WorkFlowQueue queue;
+    SqsQueue queue;
 
-    WorkFlowType(String val, WorkFlowQueue queue)
+    WorkFlowType(String val, SqsQueue queue)
     {
         this.val = val;
         this.queue = queue;
