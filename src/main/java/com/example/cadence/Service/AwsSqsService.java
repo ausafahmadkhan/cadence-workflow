@@ -20,7 +20,7 @@ public class AwsSqsService
         try {
             CreateQueueRequest createQueueRequest = new CreateQueueRequest().withQueueName(SqsQueue.UserWorkFLowQueue.getVal());
             //createQueueRequest.addAttributesEntry(QueueAttributeName.FifoQueue.name(), "true");
-            createQueueRequest.addAttributesEntry(QueueAttributeName.DelaySeconds.name(), "1");
+            createQueueRequest.addAttributesEntry(QueueAttributeName.DelaySeconds.name(), "2");
             sqsClient.createQueue(createQueueRequest);
         }
         catch (Exception e)

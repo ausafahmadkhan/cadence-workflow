@@ -10,6 +10,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 @Service
@@ -51,7 +52,7 @@ public class UserServiceImpl implements UserService
         System.out.println("Triggering workflow at : " + date);
 
         WorkflowOptions options = new WorkflowOptions.Builder()
-                .setWorkflowId("WorkFlow : " + date)
+                .setWorkflowId("WorkFlow_" + UUID.randomUUID().toString() + " : " + date)
                 .build();
 
         UserWorkFlow userWorkFlow = workflowClient.newWorkflowStub(UserWorkFlow.class, options);
