@@ -1,6 +1,5 @@
 package com.example.cadence.Activities;
 
-import com.example.cadence.Activities.UserActivity;
 import com.example.cadence.Service.UserEnrollmentService;
 import com.example.cadence.Service.UserPaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,8 +39,8 @@ public class UserActivityImpl implements UserActivity
     @Override
     public Void updateBalance(String userId) {
         userPaymentService.updateUserBalance(userId);
-        throw new RuntimeException("runtime error");
-//        return null;
+//        throw new RuntimeException("runtime error");
+        return null;
     }
 
     @Override

@@ -1,6 +1,8 @@
 package com.example.cadence.Service;
 
+import java.util.concurrent.CompletableFuture;
+
 public interface UserService
 {
-    String enrollStudent(String userId);
+    CompletableFuture<String> enrollStudent(String userId);
 }
